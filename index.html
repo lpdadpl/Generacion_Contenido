@@ -1,229 +1,205 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Plataforma de modelos virtuales con IA</title>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#e8edf1;--surface:#f6f8fa;--ink:#14213d;--muted:#52607a;--line:#b9c4d0;--accent:#c2255c;--accent-ink:#fff;--soft:#d5dde6;
-box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1626;--surface:#17203a;--ink:#e9eef6;--muted:#9aa8c2;--line:#2c3a5c;--accent:#ff6b9a;--accent-ink:#1a0a12;--soft:#1f2b4a}}
-:root[data-theme="dark"]{--bg:#0f1626;--surface:#17203a;--ink:#e9eef6;--muted:#9aa8c2;--line:#2c3a5c;--accent:#ff6b9a;--accent-ink:#1a0a12;--soft:#1f2b4a}
-*{box-sizing:border-box}
-html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 "Instrument Sans",system-ui,sans-serif}
-h1,h2,h3{font-family:"Bricolage Grotesque","Instrument Sans",system-ui,sans-serif;line-height:1.08;margin:0}
-h1{font-size:clamp(2.6rem,7vw,5.2rem);font-weight:800;letter-spacing:-.03em;max-width:15ch}
-h2{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;letter-spacing:-.02em;max-width:22ch}
-h3{font-size:1.2rem;font-weight:700}
-p{margin:.8rem 0 0;max-width:62ch}
-section{padding:clamp(3rem,8vw,6rem) clamp(1.2rem,5vw,4rem);max-width:1120px;margin:0 auto}
-.lead{color:var(--muted);font-size:1.15rem}
-.muted{color:var(--muted)}
-/* hero */
-.hero{display:grid;grid-template-columns:1.3fr 1fr;gap:3rem;align-items:center;min-height:88vh}
-.cast{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem}
-.frame{position:relative;aspect-ratio:3/4;background:var(--soft);border:1px solid var(--line);overflow:hidden}
-.frame::before,.frame::after{content:"";position:absolute;width:14px;height:14px;border:2px solid var(--accent)}
-.frame::before{top:6px;left:6px;border-right:0;border-bottom:0}
-.frame::after{bottom:6px;right:6px;border-left:0;border-top:0}
-.frame i{position:absolute;left:50%;top:30%;width:44%;aspect-ratio:1;transform:translateX(-50%);border-radius:50%;background:var(--ink);opacity:.85}
-.frame b{position:absolute;left:50%;top:62%;width:78%;height:60%;transform:translateX(-50%);border-radius:50% 50% 0 0;background:var(--ink);opacity:.85}
-.frame:nth-child(2){margin-top:2rem;background:var(--accent)}
-.frame:nth-child(2) i,.frame:nth-child(2) b{background:var(--accent-ink)}
-.frame span{position:absolute;left:8px;bottom:8px;font-size:.72rem;font-weight:600;color:var(--surface);background:var(--ink);padding:1px 6px;z-index:2}
-.frame:nth-child(2) span{background:var(--accent-ink);color:var(--accent)}
-.tag{display:inline-block;border:1px solid var(--line);padding:.2rem .7rem;border-radius:99px;font-size:.88rem;color:var(--muted);margin-bottom:1.4rem;background:var(--surface)}
-/* grids */
-.grid{display:grid;gap:1.2rem;margin-top:2.2rem}
-.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
-.card{background:var(--surface);border:1px solid var(--line);padding:1.3rem}
-.card p{font-size:.97rem;color:var(--muted);margin-top:.5rem}
-.card.key{border-color:var(--accent);border-width:2px}
-.wide{overflow-x:auto}
-pre{margin:0;font:500 .9rem/1.65 ui-monospace,Menlo,Consolas,monospace;background:var(--surface);border:1px solid var(--line);padding:1.3rem;overflow-x:auto;color:var(--ink)}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;margin-top:2rem}
-/* flow */
-.flow{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin-top:2rem}
-.flow span{background:var(--surface);border:1px solid var(--line);padding:.45rem .9rem;font-weight:500}
-.flow em{font-style:normal;color:var(--accent);font-weight:700}
-.loop{margin-top:1.4rem;color:var(--accent);font-weight:600}
-/* table */
-table{width:100%;border-collapse:collapse;margin-top:2rem;min-width:520px;background:var(--surface)}
-th,td{text-align:left;padding:.8rem 1rem;border-bottom:1px solid var(--line)}
-th{font-weight:600;color:var(--muted);font-size:.9rem}
-tr.hl td{background:var(--soft);font-weight:600}
-/* roadmap */
-.road{list-style:none;margin:2rem 0 0;padding:0;border-left:2px solid var(--accent)}
-.road li{padding:0 0 1.6rem 1.5rem;position:relative}
-.road li::before{content:"";position:absolute;left:-7px;top:.45rem;width:12px;height:12px;background:var(--accent);border-radius:50%}
-.road b{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:1.15rem}
-.checks{columns:2;column-gap:2rem;margin:2rem 0 0;padding-left:1.1rem}
-.checks li{margin-bottom:.6rem;break-inside:avoid}
-.close{background:var(--ink);color:var(--bg);max-width:none;text-align:center}
-.close h2{margin:0 auto;color:var(--bg)}
-.close p{margin:1rem auto 0;color:var(--soft)}
-.close .inner{max-width:760px;margin:0 auto}
-hr{border:0;border-top:1px solid var(--line);margin:0 auto;max-width:1120px}
-@media (max-width:860px){.hero,.two{grid-template-columns:1fr}.g3,.g4{grid-template-columns:1fr 1fr}.hero{min-height:auto}}
-@media (max-width:560px){.g2,.g3,.g4{grid-template-columns:1fr}.checks{columns:1}body{font-size:16px}}
-:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Ideas de negocio · Índice</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Instrument+Sans:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #eef1f4;
+      --surface: #fafbfc;
+      --ink: #14213d;
+      --muted: #52607a;
+      --line: #c3ccd6;
+      --a: #c2255c;
+      --b: #e8590c;
+      box-sizing: border-box;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px)
+    }
+
+    @media (prefers-color-scheme:dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #0f1626;
+        --surface: #17203a;
+        --ink: #e9eef6;
+        --muted: #9aa8c2;
+        --line: #2c3a5c;
+        --a: #ff6b9a;
+        --b: #ff8a4c
+      }
+    }
+
+    :root[data-theme="dark"] {
+      --bg: #0f1626;
+      --surface: #17203a;
+      --ink: #e9eef6;
+      --muted: #9aa8c2;
+      --line: #2c3a5c;
+      --a: #ff6b9a;
+      --b: #ff8a4c
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html {
+      scroll-padding-top: env(safe-area-inset-top, 0px)
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 400 17px/1.6 "Instrument Sans", system-ui, sans-serif;
+      min-height: 100%
+    }
+
+    main {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: clamp(2.5rem, 8vw, 5rem) clamp(1.2rem, 5vw, 3rem)
+    }
+
+    h1,
+    h2 {
+      font-family: "Bricolage Grotesque", "Instrument Sans", system-ui, sans-serif;
+      margin: 0;
+      line-height: 1.08
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 6vw, 4.2rem);
+      font-weight: 800;
+      letter-spacing: -.03em
+    }
+
+    .lead {
+      color: var(--muted);
+      font-size: 1.15rem;
+      max-width: 56ch;
+      margin: 1rem 0 0
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.4rem;
+      margin-top: 3rem
+    }
+
+    a.card {
+      display: flex;
+      flex-direction: column;
+      gap: .9rem;
+      text-decoration: none;
+      color: inherit;
+      background: var(--surface);
+      border: 2px solid var(--line);
+      border-top: 8px solid var(--c);
+      padding: 1.6rem;
+      min-height: 280px
+    }
+
+    a.card:hover {
+      border-color: var(--c)
+    }
+
+    a.card.one {
+      --c: var(--a)
+    }
+
+    a.card.two {
+      --c: var(--b)
+    }
+
+    a.card h2 {
+      font-size: 1.7rem;
+      font-weight: 600
+    }
+
+    a.card p {
+      margin: 0;
+      color: var(--muted)
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem
+    }
+
+    .chips span {
+      border: 1px solid var(--line);
+      border-radius: 99px;
+      padding: .1rem .7rem;
+      font-size: .85rem;
+      color: var(--muted)
+    }
+
+    .go {
+      margin-top: auto;
+      font-weight: 600;
+      color: var(--c)
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--a);
+      outline-offset: 3px
+    }
+
+    @media (max-width:700px) {
+      .cards {
+        grid-template-columns: 1fr
+      }
+
+      a.card {
+        min-height: 0
+      }
+
+      body {
+        font-size: 16px
+      }
+    }
+  </style>
 </head>
+
 <body>
+  <main>
+    <h1>Ideas de negocio</h1>
+    <p class="lead">Dos propuestas de contenido con IA y agentes automatizados. Elige una para ver la presentación
+      completa.</p>
 
-<section class="hero">
-  <div>
-    <span class="tag">Idea de negocio · Infraestructura de contenido con IA</span>
-    <h1>Personajes virtuales que producen, publican y aprenden solos</h1>
-    <p class="lead">Una plataforma para gestionar varios modelos generados con IA. Cada uno tiene identidad, voz, cuentas en redes, historial y métricas propias, y un equipo de agentes se encarga de todo el ciclo de contenido.</p>
-  </div>
-  <div class="cast" aria-label="Ejemplo de tres modelos virtuales">
-    <div class="frame"><i></i><b></b><span>model_001</span></div>
-    <div class="frame"><i></i><b></b><span>model_002</span></div>
-    <div class="frame"><i></i><b></b><span>model_003</span></div>
-  </div>
-</section>
+    <div class="cards">
+      <a class="card one" href="./Proceso.html">
+        <h2>Proceso completo elaboracion y publicacion</h2>
+        <p>Personajes generados con IA con identidad, cuentas en redes, historial y métricas propias, gestionados por un
+          equipo de agentes.</p>
 
-<hr>
-<section>
-  <h2>No es "una IA que genera vídeos"</h2>
-  <p class="lead">Tampoco una influencer virtual suelta. Lo que se construye es la infraestructura para gestionar muchos personajes autónomos con el mismo sistema.</p>
-  <div class="grid g3">
-    <div class="card"><h3>Identidad persistente</h3><p>Apariencia, personalidad y voz consistentes. Los agentes las consultan antes de generar nada.</p></div>
-    <div class="card"><h3>Producción automatizada</h3><p>De la idea al vídeo publicado, con agentes especializados en cada etapa.</p></div>
-    <div class="card"><h3>Aprendizaje por resultados</h3><p>El historial y las métricas guían el siguiente contenido. El modelo de lenguaje no se reentrena: usa los datos como contexto.</p></div>
-  </div>
-</section>
-
-<hr>
-<section>
-  <h2>Cada modelo es una entidad con su propia biblioteca</h2>
-  <p class="lead">Así el sistema no tiene que describir al personaje desde cero en cada generación.</p>
-  <div class="two">
-<pre>/models/model_001/
-├── AGENTS.md
-├── appearance.json
-├── personality.json
-├── voice.json
-├── visual_style.json
-├── generation.json
-├── references/
-│   ├── face_01.png
-│   ├── full_body_01.png
-│   └── expressions/
-└── history/
-    ├── published.json
-    └── performance.json</pre>
-    <div>
-      <div class="card key"><h3>AGENTS.md</h3><p>La "biblia" del personaje: identidad, forma de hablar y actuar, estilo visual, tipo de contenido, límites y reglas de consistencia.</p></div>
-      <div class="card" style="margin-top:1rem"><h3>Archivos JSON</h3><p>Datos estructurados: rasgos físicos, personalidad, voz, estética y parámetros técnicos de generación.</p></div>
-      <div class="card" style="margin-top:1rem"><h3>history/</h3><p>Lo publicado y cómo funcionó cada pieza.</p></div>
+        <span class="go">Ver presentación</span>
+      </a>
+      <a class="card one" href="./Modelos.html">
+        <h2>Plataforma de modelos virtuales</h2>
+        <p>Personajes generados con IA con identidad, cuentas en redes, historial y métricas propias, gestionados por un
+          equipo de agentes.</p>
+        <div class="chips"><span>Identidad
+            persistente</span><span>Instagram</span><span>TikTok</span><span>YouTube</span></div>
+        <span class="go">Ver presentación</span>
+      </a>
+      <a class="card two" href="./Series.html">
+        <h2>Series de vídeos cortos con IA</h2>
+        <p>Episodios breves con frutas y metales preciosos personificados, producidos en volumen y optimizados con
+          métricas.</p>
+        <div class="chips"><span>Vídeo corto</span><span>Series</span><span>Alto volumen</span><span>TikTok</span></div>
+        <span class="go">Ver presentación</span>
+      </a>
     </div>
-  </div>
-</section>
-
-<hr>
-<section>
-  <h2>Cuatro agentes, un solo flujo</h2>
-  <div class="grid g4">
-    <div class="card key"><h3>Orchestrator</h3><p>Recibe la orden, reparte tareas, controla errores, decide cuándo regenerar y mantiene el estado de cada producción.</p></div>
-    <div class="card"><h3>Creativo</h3><p>Ideas, guiones, escenas, diálogos, prompts, títulos, descripciones y hashtags. Entrega un JSON de generación.</p></div>
-    <div class="card"><h3>Generación</h3><p>Convierte el JSON en imagen y vídeo mediante un adaptador de proveedor. Hoy, Higgsfield.</p></div>
-    <div class="card"><h3>Distribución</h3><p>Adapta formatos, programa y publica en cada red, comprueba el estado y recupera métricas.</p></div>
-  </div>
-  <div class="wide" style="margin-top:2rem"><pre>{
-  "model": "model_001",
-  "platform": "tiktok",
-  "concept": "morning routine",
-  "scene": { "location": "bedroom", "lighting": "morning",
-             "action": "gets ready for the day" },
-  "expression": "happy",
-  "camera": "medium shot"
-}</pre></div>
-  <p class="muted">Este JSON es el contrato entre el agente creativo y el de generación.</p>
-</section>
-
-<hr>
-<section>
-  <h2>El ciclo que se cierra solo</h2>
-  <div class="flow">
-    <span>Idea</span><em>›</em><span>Guion</span><em>›</em><span>Prompts / JSON</span><em>›</em><span>Generación</span><em>›</em><span>Edición</span><em>›</em><span>Publicación</span><em>›</em><span>Análisis</span><em>›</em><span>Aprendizaje</span>
-  </div>
-  <p class="loop">Crear → publicar → medir → aprender → crear</p>
-  <p>Con los resultados de cada vídeo el sistema detecta qué formatos, duraciones, temas, horarios y estilos funcionan mejor, y qué cambia entre plataformas.</p>
-</section>
-
-<hr>
-<section>
-  <h2>Cuentas propias en cada plataforma</h2>
-  <div class="grid g3">
-    <div class="card"><h3>Instagram</h3><p>Prioritaria en el MVP.</p></div>
-    <div class="card"><h3>TikTok</h3><p>Prioritaria en el MVP.</p></div>
-    <div class="card"><h3>YouTube</h3><p>Se suma después.</p></div>
-  </div>
-  <p>La plataforma guarda la relación modelo → cuenta social → plataforma → ID externo. Un MCP de redes sociales unifica el acceso, pero cada red mantiene sus propias reglas de autenticación, permisos y límites.</p>
-</section>
-
-<hr>
-<section>
-  <h2>Costes: dos medidas clave</h2>
-  <p class="lead">Coste total de producir y publicar un contenido, y de ahí el coste mensual de mantener un modelo.</p>
-  <div class="grid g3">
-    <div class="card"><h3>Variables</h3><p>Modelos de lenguaje, Higgsfield, audio, imagen, vídeo, almacenamiento y procesamiento.</p></div>
-    <div class="card"><h3>Relativamente fijos</h3><p>Servidor, base de datos, dominio, monitorización y servicios auxiliares.</p></div>
-    <div class="card"><h3>De distribución</h3><p>APIs y MCP de Instagram, TikTok y YouTube.</p></div>
-  </div>
-  <div class="wide">
-  <table>
-    <thead><tr><th>Plan Higgsfield</th><th>Precio/mes (promo anual)</th><th>Créditos/año</th></tr></thead>
-    <tbody>
-      <tr><td>Basic</td><td>~$9,80</td><td>9.600</td></tr>
-      <tr class="hl"><td>Pro (incluye API)</td><td>~$19,95</td><td>57.600</td></tr>
-      <tr><td>Ultra</td><td>~$99,95</td><td>360.000</td></tr>
-    </tbody>
-  </table>
-  </div>
-  <p class="muted">El coste real por vídeo depende del modelo, la duración, la resolución y el número de intentos.</p>
-  <p>Para contener el gasto en lenguaje, cada tarea usa el modelo adecuado: locales (por ejemplo con Ollama) o económicos para tareas simples y modelos potentes solo para creatividad y orquestación.</p>
-</section>
-
-<hr>
-<section>
-  <h2>Empezar con un solo modelo y aprobación humana</h2>
-  <ol class="road">
-    <li><b>MVP</b><br>1 modelo, identidad persistente, agente creativo, Higgsfield, vídeo, Instagram y TikTok, métricas. Una persona aprueba antes de publicar.</li>
-    <li><b>Automatización</b><br>Varios contenidos por modelo con publicación programada y medición.</li>
-    <li><b>Segundo modelo</b><br>Se comprueba que la arquitectura se replica sin rehacerla.</li>
-    <li><b>N modelos</b><br>Escalado a decenas, con la misma base de datos y los mismos agentes.</li>
-  </ol>
-</section>
-
-<hr>
-<section>
-  <h2>Qué hay que validar antes de construir</h2>
-  <ul class="checks">
-    <li>Capacidades reales de Higgsfield por API/MCP y modelos disponibles.</li>
-    <li>Créditos por tipo de generación, coste por vídeo y por modelo/mes.</li>
-    <li>API o MCP para Instagram, TikTok y YouTube.</li>
-    <li>Gestión de varias cuentas.</li>
-    <li>Requisitos de las plataformas para contenido generado con IA.</li>
-    <li>Derechos de imágenes, voces, música y personajes.</li>
-    <li>Consistencia facial y corporal entre generaciones.</li>
-    <li>Gestión de fallos y regeneraciones.</li>
-    <li>Cómo evitar publicaciones automáticas defectuosas.</li>
-    <li>Escalado de un modelo a muchos.</li>
-  </ul>
-</section>
-
-<section class="close">
-  <div class="inner">
-    <h2>Una fábrica de personajes virtuales, no un personaje</h2>
-    <p>Siguiente paso: llevar esto a una arquitectura técnica real, con tecnologías, estructura del proyecto, base de datos, agentes, MCPs y el cálculo de coste por modelo y mes.</p>
-  </div>
-</section>
-
+  </main>
 </body>
+
 </html>

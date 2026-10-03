@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Guía técnica: del encargo al vídeo publicado</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef1f4;--surface:#fafbfc;--ink:#14213d;--muted:#52607a;--line:#c3ccd6;--a:#c2255c;--code:#101a30;--codeink:#dbe5f5;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1626;--surface:#17203a;--ink:#e9eef6;--muted:#9aa8c2;--line:#2c3a5c;--a:#ff6b9a;--code:#0a1020;--codeink:#dbe5f5}}
+:root[data-theme="dark"]{--bg:#0f1626;--surface:#17203a;--ink:#e9eef6;--muted:#9aa8c2;--line:#2c3a5c;--a:#ff6b9a;--code:#0a1020;--codeink:#dbe5f5}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.65 "Instrument Sans",system-ui,sans-serif}
+main{max-width:920px;margin:0 auto;padding:clamp(2rem,6vw,4rem) clamp(1.2rem,5vw,2.5rem)}
+h1,h2,h3{font-family:"Bricolage Grotesque","Instrument Sans",system-ui,sans-serif;line-height:1.1;margin:0}
+h1{font-size:clamp(2.3rem,6vw,3.8rem);font-weight:800;letter-spacing:-.03em;max-width:16ch}
+h2{font-size:clamp(1.6rem,3.5vw,2.2rem);font-weight:800;letter-spacing:-.02em;margin-top:4rem}
+h3{font-size:1.15rem;font-weight:600;margin-top:1.8rem}
+p{margin:.8rem 0 0;max-width:68ch}
+.lead{color:var(--muted);font-size:1.15rem}
+.muted{color:var(--muted)}
+nav{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:2rem}
+nav a{border:1px solid var(--line);background:var(--surface);color:var(--ink);text-decoration:none;padding:.25rem .8rem;border-radius:99px;font-size:.9rem}
+nav a:hover{border-color:var(--a)}
+pre{margin:1rem 0 0;background:var(--code);color:var(--codeink);padding:1.1rem 1.2rem;overflow-x:auto;font:500 .85rem/1.6 ui-monospace,Menlo,Consolas,monospace;border-left:4px solid var(--a)}
+code{font:500 .88em ui-monospace,Menlo,Consolas,monospace;background:var(--surface);border:1px solid var(--line);padding:0 .35em}
+pre code{background:none;border:0;padding:0}
+.grid{display:grid;gap:1rem;margin-top:1.4rem;grid-template-columns:repeat(3,1fr)}
+.box{background:var(--surface);border:1px solid var(--line);padding:1.1rem}
+.box p{font-size:.95rem;color:var(--muted);margin-top:.4rem}
+.box h3{margin:0}
+.warn{border-left:4px solid var(--a);background:var(--surface);padding:1rem 1.2rem;margin-top:1.4rem}
+.warn p{margin:0;font-size:.97rem}
+.steps{list-style:none;margin:1.6rem 0 0;padding:0;counter-reset:s}
+.steps li{counter-increment:s;position:relative;padding:0 0 1.2rem 3rem;border-left:2px solid var(--line);margin-left:1rem}
+.steps li::before{content:counter(s);position:absolute;left:-1rem;top:0;width:2rem;height:2rem;border-radius:50%;background:var(--a);color:#fff;font-weight:700;display:grid;place-items:center;font-size:.9rem}
+.steps b{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:1.05rem}
+.steps span{display:block;color:var(--muted);font-size:.95rem}
+.wide{overflow-x:auto}
+table{width:100%;border-collapse:collapse;margin-top:1.4rem;min-width:560px;background:var(--surface)}
+th,td{text-align:left;padding:.65rem .9rem;border-bottom:1px solid var(--line);font-size:.95rem;vertical-align:top}
+th{color:var(--muted);font-weight:600}
+.stack{display:grid;gap:.5rem;margin-top:1.6rem}
+.layer{display:grid;grid-template-columns:150px 1fr;gap:1rem;background:var(--surface);border:1px solid var(--line);padding:.8rem 1rem;align-items:center}
+.layer b{font-family:"Bricolage Grotesque",system-ui,sans-serif}
+.layer span{color:var(--muted);font-size:.95rem}
+.layer.hot{border-color:var(--a)}
+@media (max-width:760px){.grid{grid-template-columns:1fr}.layer{grid-template-columns:1fr;gap:.2rem}body{font-size:16px}}
+:focus-visible{outline:3px solid var(--a);outline-offset:2px}
+</style>
+</head>
+<body>
+<main>
+<h1>Del encargo al vídeo publicado</h1>
+<p class="lead">Guía técnica del proceso completo: cómo funciona MCP, qué modelo usa cada agente, cómo se configuran las claves, cómo se descargan los vídeos y cómo se publican.</p>
+<nav>
+<a href="#arquitectura">Arquitectura</a><a href="#mcp">MCP</a><a href="#modelos">Modelos por agente</a><a href="#claves">Claves</a><a href="#generacion">Generación y descarga</a><a href="#publicacion">Publicación</a><a href="#estados">Estados y errores</a><a href="#puesta">Puesta en marcha</a>
+</nav>
+<div class="warn"><p>Los nombres de herramientas, límites y requisitos de cada servicio cambian con frecuencia. Los ejemplos son orientativos: comprueba la documentación oficial de cada proveedor antes de implementar.</p></div>
+
+<h2 id="arquitectura">1. Arquitectura en capas</h2>
+<p>Cada agente solo habla con sus herramientas. Las herramientas se exponen por MCP y los archivos pasan de un agente a otro a través de una carpeta compartida con un manifiesto.</p>
+<div class="stack">
+<div class="layer hot"><b>Orchestrator</b><span>Crea la tarea, la reparte, guarda el estado en la base de datos y reintenta si algo falla.</span></div>
+<div class="layer"><b>Agentes</b><span>Creativo, Generación y Distribución. Cada uno con su propio modelo, sus herramientas y sus claves.</span></div>
+<div class="layer"><b>Servidores MCP</b><span>Higgsfield (vídeo), sistema de archivos, base de datos y redes sociales.</span></div>
+<div class="layer"><b>Servicios</b><span>Higgsfield, Instagram, TikTok, YouTube, proveedores de modelos de lenguaje y Ollama local.</span></div>
+<div class="layer"><b>Almacén</b><span>Carpeta del dispositivo (o disco/bucket sincronizado) donde viven los vídeos y sus manifiestos.</span></div>
+</div>
+
+<h2 id="mcp">2. Cómo funciona MCP</h2>
+<p>MCP (Model Context Protocol) es un protocolo para que un modelo use herramientas externas con un formato común. El agente actúa de <b>cliente</b> y cada servicio se expone mediante un <b>servidor MCP</b>.</p>
+<div class="grid">
+<div class="box"><h3>Tools</h3><p>Acciones que el modelo puede pedir: generar un vídeo, consultar un trabajo, publicar.</p></div>
+<div class="box"><h3>Resources</h3><p>Datos que se leen: el AGENTS.md de la serie, el historial, el manifiesto.</p></div>
+<div class="box"><h3>Transporte</h3><p>Local por entrada/salida estándar (un proceso en tu máquina) o remoto por HTTP con autenticación.</p></div>
+</div>
+<p>El ciclo es siempre el mismo: el agente lista las herramientas del servidor, el modelo decide cuál llamar con qué argumentos, el cliente la ejecuta y devuelve el resultado al modelo.</p>
+<h3>Declarar los servidores</h3>
+<pre><code>{
+  "mcpServers": {
+    "higgsfield": { "url": "https://mcp.higgsfield.ai/mcp" },
+    "archivos": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/media/videos"]
+    },
+    "redes": {
+      "command": "python",
+      "args": ["servidores/redes_mcp.py"],
+      "env": { "TIKTOK_TOKEN": "${TIKTOK_TOKEN}",
+               "IG_TOKEN": "${IG_TOKEN}" }
+    }
+  }
+}</code></pre>
+<p class="muted">Los servidores remotos suelen autorizarse por OAuth al conectarlos; los locales reciben sus secretos por variables de entorno.</p>
+<h3>Qué herramientas ve cada agente</h3>
+<p>No todos los agentes deben ver todos los servidores. El de generación ve Higgsfield y archivos; el de distribución ve archivos y redes; el creativo solo lee fichas e historial. Así un fallo o un prompt malicioso no puede publicar nada desde el agente equivocado.</p>
+
+<h2 id="modelos">3. Un modelo distinto para cada agente</h2>
+<p>Se define en un único archivo de configuración. El código del agente no cambia: solo cambia a qué proveedor y modelo apunta.</p>
+<pre><code># config/modelos.yaml
+proveedores:
+  ollama:      { base_url: "http://localhost:11434/v1", key_env: null }
+  openrouter:  { base_url: "https://openrouter.ai/api/v1", key_env: OPENROUTER_API_KEY }
+  openai:      { base_url: "https://api.openai.com/v1",  key_env: OPENAI_API_KEY }
+
+agentes:
+  orchestrator: { proveedor: openrouter, modelo: "&lt;MODELO_POTENTE&gt;",  temperatura: 0.2 }
+  creativo:     { proveedor: openai,     modelo: "&lt;MODELO_CREATIVO&gt;", temperatura: 0.9 }
+  generacion:   { proveedor: ollama,     modelo: "llama3.1:8b",         temperatura: 0.1 }
+  distribucion: { proveedor: ollama,     modelo: "llama3.1:8b",         temperatura: 0.1 }</code></pre>
+<h3>Local o servicio con el mismo código</h3>
+<p>Ollama, OpenRouter y otros proveedores aceptan el formato de la API de OpenAI, así que basta cambiar la URL base y la clave.</p>
+<pre><code>import os, yaml
+from openai import OpenAI
+
+CFG = yaml.safe_load(open("config/modelos.yaml"))
+
+def cliente_para(agente):
+    a = CFG["agentes"][agente]
+    p = CFG["proveedores"][a["proveedor"]]
+    clave = os.getenv(p["key_env"]) if p["key_env"] else "ollama"
+    return OpenAI(base_url=p["base_url"], api_key=clave), a</code></pre>
+<div class="wide"><table>
+<thead><tr><th>Agente</th><th>Tipo de tarea</th><th>Opción razonable</th></tr></thead>
+<tbody>
+<tr><td>Orchestrator</td><td>Planificar, decidir, recuperar errores</td><td>Modelo potente de servicio</td></tr>
+<tr><td>Creativo</td><td>Guiones, ideas, variaciones</td><td>Modelo de servicio con buena escritura</td></tr>
+<tr><td>Generación</td><td>Rellenar JSON, lanzar y vigilar trabajos</td><td>Modelo local pequeño</td></tr>
+<tr><td>Distribución</td><td>Títulos, hashtags, formato por plataforma</td><td>Modelo local pequeño o económico</td></tr>
+</tbody></table></div>
+<p class="muted">Un modelo local necesita que el modelo elegido soporte llamadas a herramientas. Pruébalo antes de asignarlo a un agente que dependa de ellas.</p>
+
+<h2 id="claves">4. Configurar las claves de los servicios</h2>
+<pre><code># .env  (nunca se sube al repositorio)
+OPENROUTER_API_KEY=...
+OPENAI_API_KEY=...
+HIGGSFIELD_API_KEY=...        # solo si el servicio ofrece clave
+IG_TOKEN=...
+TIKTOK_TOKEN=...
+YT_CLIENT_SECRET=...
+
+# .gitignore
+.env
+secrets/</code></pre>
+<div class="grid">
+<div class="box"><h3>Una clave por servicio</h3><p>Si una se filtra, se revoca sin tocar el resto.</p></div>
+<div class="box"><h3>Mínimo privilegio</h3><p>Cada proceso recibe solo las variables que necesita.</p></div>
+<div class="box"><h3>Tokens de redes</h3><p>Usan OAuth: se guardan por cuenta, caducan y hay que renovarlos con el token de refresco.</p></div>
+</div>
+<p>En producción, mejor un gestor de secretos del servidor o del sistema (por ejemplo, el de tu proveedor cloud) que un archivo en disco. Nunca pongas claves dentro de AGENTS.md ni en los prompts.</p>
+
+<h2 id="generacion">5. Generación, solicitud y descarga</h2>
+<p>La generación de vídeo es asíncrona: se envía el trabajo, se espera y se recoge el resultado.</p>
+<ol class="steps">
+<li><b>El Orchestrator crea la tarea</b><span>Registra un <code>id</code> en la base de datos con estado <code>pendiente</code> y el JSON del creativo.</span></li>
+<li><b>Generación lanza el trabajo</b><span>Llama a la herramienta de vídeo del servidor MCP y guarda el <code>job_id</code>. Estado: <code>generando</code>.</span></li>
+<li><b>Espera con sondeo</b><span>Consulta el trabajo cada cierto tiempo, con un límite de espera y de reintentos.</span></li>
+<li><b>Descarga a la carpeta del dispositivo</b><span>Al terminar, baja el archivo a <code>/media/videos/inbox/</code>. Estado: <code>descargado</code>.</span></li>
+<li><b>Verificación y postproceso</b><span>Comprueba que el archivo abre, mide duración y formato, recorta, añade música o subtítulos y guarda en <code>listo/</code>.</span></li>
+<li><b>Manifiesto</b><span>Escribe un JSON junto al vídeo con título, descripción, hashtags, plataformas y hora. Es el relevo hacia el agente de subida.</span></li>
+</ol>
+<h3>Descarga y manifiesto</h3>
+<pre><code>import requests, json, subprocess, pathlib
+
+def descargar(url, destino):
+    with requests.get(url, stream=True, timeout=120) as r:
+        r.raise_for_status()
+        with open(destino, "wb") as f:
+            for trozo in r.iter_content(1 &lt;&lt; 20):
+                f.write(trozo)
+
+def verificar(ruta):
+    out = subprocess.run(["ffprobe", "-v", "error", "-show_entries",
+        "format=duration", "-of", "json", ruta], capture_output=True, text=True)
+    return float(json.loads(out.stdout)["format"]["duration"])
+
+def escribir_manifiesto(id, ruta, meta):
+    m = {"id": id, "archivo": ruta, "duracion_s": verificar(ruta),
+         "titulo": meta["titulo"], "descripcion": meta["descripcion"],
+         "hashtags": meta["hashtags"], "plataformas": meta["plataformas"],
+         "publicar_en": meta["hora"], "estado": "listo"}
+    json.dump(m, open(f"/media/videos/listo/{id}.json", "w"), indent=2)</code></pre>
+<h3>Carpetas del dispositivo</h3>
+<pre><code>/media/videos/
+├── inbox/        # descargas recién terminadas
+├── listo/        # vídeo + manifiesto, a la espera de revisión
+├── aprobado/     # revisado por una persona
+├── publicado/    # ya subido, con el ID externo
+└── fallido/      # con el motivo del error</code></pre>
+<p>Si el agente de subida corre en otro dispositivo, se sincroniza esa carpeta con una herramienta como Syncthing o rclone, o con un bucket de almacenamiento. Lo importante es que el vídeo y su manifiesto lleguen juntos.</p>
+
+<h2 id="publicacion">6. Publicación</h2>
+<ol class="steps">
+<li><b>El agente de distribución vigila <code>aprobado/</code></b><span>Lee los manifiestos nuevos, o los recibe del Orchestrator.</span></li>
+<li><b>Comprueba antes de subir</b><span>Duración, formato vertical, tamaño y que no exista ya una publicación con ese <code>id</code>.</span></li>
+<li><b>Sube por cuenta y plataforma</b><span>Elige el token de la cuenta correspondiente y llama a la herramienta del MCP de redes.</span></li>
+<li><b>Guarda el resultado</b><span>Mueve el archivo a <code>publicado/</code> con el ID externo y la URL.</span></li>
+<li><b>Recupera métricas</b><span>Vistas, retención y comentarios pasan al historial para la siguiente decisión creativa.</span></li>
+</ol>
+<div class="wide"><table>
+<thead><tr><th>Red</th><th>Cómo se publica</th><th>A tener en cuenta</th></tr></thead>
+<tbody>
+<tr><td>Instagram</td><td>API de publicación de Meta, con cuenta profesional</td><td>Pide una app configurada y puede requerir una URL accesible del vídeo</td></tr>
+<tr><td>TikTok</td><td>API de publicación de contenido</td><td>La app suele necesitar revisión para publicar en abierto</td></tr>
+<tr><td>YouTube</td><td>YouTube Data API, subida de vídeo</td><td>Tiene cuota diaria y puede limitar la visibilidad hasta verificar el proyecto</td></tr>
+</tbody></table></div>
+<div class="warn"><p>Aprobación humana primero: en el MVP, solo se mueve un vídeo a <code>aprobado/</code> cuando una persona lo ha visto. Es la defensa contra publicaciones defectuosas. Etiqueta el contenido como generado con IA cuando la plataforma lo exija.</p></div>
+
+<h2 id="estados">7. Estados, reintentos y errores</h2>
+<div class="wide"><table>
+<thead><tr><th>Estado</th><th>Quién lo pone</th><th>Si falla</th></tr></thead>
+<tbody>
+<tr><td>pendiente</td><td>Orchestrator</td><td>Reencolar</td></tr>
+<tr><td>generando</td><td>Generación</td><td>Reintentar con límite y avisar al agotarlo</td></tr>
+<tr><td>descargado</td><td>Generación</td><td>Volver a descargar; si el enlace caducó, relanzar el trabajo</td></tr>
+<tr><td>listo</td><td>Postproceso</td><td>A <code>fallido/</code> con el motivo</td></tr>
+<tr><td>aprobado</td><td>Persona</td><td>Rechazar y pedir regeneración</td></tr>
+<tr><td>publicado</td><td>Distribución</td><td>Reintentar sin duplicar (se comprueba el <code>id</code>)</td></tr>
+<tr><td>medido</td><td>Distribución</td><td>Reintentar más tarde</td></tr>
+</tbody></table></div>
+<p>Dos reglas evitan casi todos los problemas: cada paso es idempotente (repetirlo no duplica nada) y el estado vive en la base de datos, no en la memoria del agente.</p>
+
+<h2 id="puesta">8. Puesta en marcha</h2>
+<ol class="steps">
+<li><b>Prueba cada pieza por separado</b><span>Un vídeo generado a mano, una descarga, una publicación en una cuenta de prueba.</span></li>
+<li><b>Configura modelos y claves</b><span><code>modelos.yaml</code>, <code>.env</code> y los servidores MCP, uno por uno.</span></li>
+<li><b>Conecta la cadena con aprobación humana</b><span>Idea, vídeo, carpeta <code>listo/</code>, revisión, publicación.</span></li>
+<li><b>Mide el coste real por vídeo</b><span>Con los créditos y las llamadas de modelo de una tanda corta.</span></li>
+<li><b>Automatiza por lotes</b><span>Solo cuando el flujo manual sea estable.</span></li>
+</ol>
+</main>
+</body>
+</html>

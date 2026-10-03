@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Series de vídeos cortos con IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff6d6;--surface:#fffdf3;--ink:#2a1f3d;--muted:#675a7d;--line:#e3d6a0;--a:#e8590c;--gold:#f2b705;--soft:#fbeeb4;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1d1630;--surface:#271e3f;--ink:#f6efd8;--muted:#b6aad0;--line:#43366a;--a:#ff8a4c;--gold:#ffd23f;--soft:#32264f}}
+:root[data-theme="dark"]{--bg:#1d1630;--surface:#271e3f;--ink:#f6efd8;--muted:#b6aad0;--line:#43366a;--a:#ff8a4c;--gold:#ffd23f;--soft:#32264f}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 "Instrument Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:"Fredoka","Instrument Sans",system-ui,sans-serif;margin:0;line-height:1.1}
+h1{font-size:clamp(2.6rem,7vw,5rem);font-weight:700;max-width:14ch}
+h2{font-size:clamp(1.8rem,4vw,2.7rem);font-weight:600;max-width:22ch}
+h3{font-size:1.25rem;font-weight:600}
+p{margin:.8rem 0 0;max-width:62ch}
+section{padding:clamp(3rem,8vw,5.5rem) clamp(1.2rem,5vw,4rem);max-width:1120px;margin:0 auto}
+.lead{font-size:1.15rem;color:var(--muted)}
+.muted{color:var(--muted)}
+.hero{display:grid;grid-template-columns:1.3fr 1fr;gap:3rem;align-items:center;min-height:86vh}
+.tag{display:inline-block;background:var(--ink);color:var(--bg);padding:.25rem .8rem;border-radius:99px;font-size:.88rem;margin-bottom:1.4rem}
+/* pantallas de vídeo */
+.reels{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem}
+.reel{aspect-ratio:9/16;border:3px solid var(--ink);border-radius:20px;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:.7rem}
+.reel::before{content:"";position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);width:0;height:0;border-left:26px solid var(--ink);border-top:16px solid transparent;border-bottom:16px solid transparent;opacity:.85}
+.reel b{font-family:"Fredoka",system-ui,sans-serif;font-size:.95rem;line-height:1.15;position:relative}
+.reel small{font-size:.72rem;position:relative;opacity:.8}
+.r1{background:linear-gradient(160deg,#ffe066,#ffa94d)}
+.r2{background:linear-gradient(160deg,#ffe58a,#c99a1a);margin-top:1.4rem}
+.r3{background:linear-gradient(160deg,#ffc9c9,#ff6b6b)}
+.r1,.r2,.r3{color:#2a1f3d}
+.grid{display:grid;gap:1.2rem;margin-top:2.2rem}
+.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--surface);border:2px solid var(--ink);border-radius:18px;padding:1.3rem}
+.card p{font-size:.97rem;color:var(--muted);margin-top:.5rem}
+.card.hot{background:var(--soft)}
+pre{margin:0;font:500 .9rem/1.65 ui-monospace,Menlo,Consolas,monospace;background:var(--surface);border:2px solid var(--ink);border-radius:18px;padding:1.3rem;overflow-x:auto}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;margin-top:2rem}
+.flow{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin-top:2rem}
+.flow span{background:var(--surface);border:2px solid var(--ink);border-radius:99px;padding:.4rem 1rem;font-weight:500}
+.flow em{font-style:normal;font-weight:700;color:var(--a)}
+.loop{font-family:"Fredoka",system-ui,sans-serif;font-size:1.3rem;color:var(--a);margin-top:1.4rem}
+.wide{overflow-x:auto}
+table{width:100%;border-collapse:collapse;margin-top:2rem;min-width:520px;background:var(--surface);border:2px solid var(--ink)}
+th,td{text-align:left;padding:.8rem 1rem;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-size:.9rem;font-weight:600}
+tr.hl td{background:var(--soft);font-weight:600}
+.road{list-style:none;margin:2rem 0 0;padding:0}
+.road li{padding:0 0 1.4rem 1.6rem;position:relative;border-left:3px solid var(--ink);margin-left:.5rem}
+.road li::before{content:"";position:absolute;left:-10px;top:.4rem;width:17px;height:17px;background:var(--gold);border:3px solid var(--ink);border-radius:50%}
+.road b{font-family:"Fredoka",system-ui,sans-serif;font-size:1.15rem}
+.checks{columns:2;column-gap:2rem;margin:2rem 0 0;padding-left:1.1rem}
+.checks li{margin-bottom:.6rem;break-inside:avoid}
+.warn{border-color:var(--a);background:var(--soft)}
+.close{background:var(--ink);color:var(--bg);max-width:none;text-align:center}
+.close .inner{max-width:760px;margin:0 auto}
+.close h2{margin:0 auto}
+.close p{margin:1rem auto 0;opacity:.85}
+hr{border:0;border-top:2px dashed var(--line);margin:0 auto;max-width:1120px}
+@media (max-width:860px){.hero,.two{grid-template-columns:1fr}.g3,.g4{grid-template-columns:1fr 1fr}.hero{min-height:auto}}
+@media (max-width:560px){.g3,.g4{grid-template-columns:1fr}.checks{columns:1}body{font-size:16px}}
+:focus-visible{outline:3px solid var(--a);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div>
+    <span class="tag">Idea de negocio · Vídeo corto con IA a escala</span>
+    <h1>Series de vídeos cortos donde frutas y metales cobran vida</h1>
+    <p class="lead">Episodios breves protagonizados por objetos personificados: limones dramáticos, lingotes de oro con complejo de estrella, plata que cotiza en bolsa. Un sistema de agentes los idea, genera, publica y mide para repetir lo que funciona.</p>
+  </div>
+  <div class="reels" aria-label="Ejemplos de episodios">
+    <div class="reel r1"><b>El limón descubre que es una lima</b><small>Drama en el frutero</small></div>
+    <div class="reel r2"><b>El oro sube, la plata no</b><small>El reino de los metales</small></div>
+    <div class="reel r3"><b>Fresa contra el yogur</b><small>Drama en el frutero</small></div>
+  </div>
+</section>
+
+<hr>
+<section>
+  <h2>Cada serie es un universo con reglas propias</h2>
+  <div class="grid g3">
+    <div class="card"><h3>Personajes reconocibles</h3><p>Frutas y metales con carácter, voz y tics propios que el público aprende a esperar.</p></div>
+    <div class="card"><h3>Series con formato fijo</h3><p>"Drama en el frutero", "El reino de los metales", "Bolsa de las joyas": cada una con su tono y estructura.</p></div>
+    <div class="card"><h3>Volumen y prueba constante</h3><p>Vídeos de 10 a 30 segundos, muchas variantes y decisiones guiadas por métricas.</p></div>
+  </div>
+</section>
+
+<hr>
+<section>
+  <h2>Cada serie tiene su ficha</h2>
+  <p class="lead">Los agentes la consultan antes de generar, así no hay que describir el universo desde cero en cada vídeo.</p>
+  <div class="two">
+<pre>/series/drama_frutero/
+├── AGENTS.md
+├── universo.json
+├── personajes/
+│   ├── limon_lucho.json
+│   └── fresa_fatima.json
+├── voz.json
+├── estilo_visual.json
+├── generation.json
+├── referencias/
+│   ├── limon_lucho_01.png
+│   └── expresiones/
+└── history/
+    ├── published.json
+    └── performance.json</pre>
+    <div>
+      <div class="card hot"><h3>AGENTS.md de la serie</h3><p>Tono (humor, drama, parodia), reglas del universo, frases y tics de cada personaje, formato fijo del vídeo y límites de contenido.</p></div>
+      <div class="card" style="margin-top:1rem"><h3>Fichas de personaje</h3><p>Aspecto, voz, carácter y relaciones con otros personajes.</p></div>
+      <div class="card" style="margin-top:1rem"><h3>Historial</h3><p>Qué se publicó y qué funcionó, para repetir lo bueno.</p></div>
+    </div>
+  </div>
+</section>
+
+<hr>
+<section>
+  <h2>Cuatro agentes, un solo flujo</h2>
+  <div class="grid g4">
+    <div class="card hot"><h3>Orchestrator</h3><p>Planifica lotes de vídeos, reparte tareas, controla errores y decide qué regenerar.</p></div>
+    <div class="card"><h3>Creativo</h3><p>Ideas de episodio, guion, diálogos, prompts, títulos, descripciones y hashtags.</p></div>
+    <div class="card"><h3>Generación</h3><p>Imagen y vídeo mediante un adaptador de proveedor (Higgsfield), con voz y montaje.</p></div>
+    <div class="card"><h3>Distribución</h3><p>Adapta a cada red, programa, publica y recoge métricas.</p></div>
+  </div>
+  <div class="wide" style="margin-top:2rem"><pre>{
+  "serie": "drama_frutero",
+  "plataforma": "tiktok",
+  "episodio": "El limón descubre que es una lima",
+  "personajes": ["limon_lucho", "fresa_fatima"],
+  "escena": { "lugar": "frutero de cocina", "luz": "mañana" },
+  "duracion_s": 15,
+  "plano": "primer plano"
+}</pre></div>
+  <p class="muted">Este JSON es el contrato entre el agente creativo y el de generación.</p>
+</section>
+
+<hr>
+<section>
+  <h2>Un ciclo corto y repetible</h2>
+  <div class="flow">
+    <span>Idea de episodio</span><em>›</em><span>Guion</span><em>›</em><span>JSON</span><em>›</em><span>Vídeo y voz</span><em>›</em><span>Revisión</span><em>›</em><span>Publicación</span><em>›</em><span>Métricas</span>
+  </div>
+  <p class="loop">Producir → publicar → medir → repetir lo que funciona</p>
+  <p>Al ser piezas breves, el sistema puede probar muchos ganchos, personajes y formatos y quedarse con los que retienen más.</p>
+</section>
+
+<hr>
+<section>
+  <h2>Costes: el vídeo corto lo hace viable</h2>
+  <p class="lead">La métrica clave es el coste por vídeo publicado y, a partir de ahí, el coste mensual por serie.</p>
+  <div class="grid g3">
+    <div class="card"><h3>Variables</h3><p>Generación de vídeo, voz, música, modelos de lenguaje y almacenamiento.</p></div>
+    <div class="card"><h3>Fijos</h3><p>Servidor, base de datos, dominio y monitorización.</p></div>
+    <div class="card"><h3>Distribución</h3><p>APIs de Instagram, TikTok y YouTube.</p></div>
+  </div>
+  <div class="wide">
+  <table>
+    <thead><tr><th>Plan Higgsfield</th><th>Precio/mes (promo anual)</th><th>Créditos/año</th></tr></thead>
+    <tbody>
+      <tr><td>Basic</td><td>~$9,80</td><td>9.600</td></tr>
+      <tr class="hl"><td>Pro (incluye API)</td><td>~$19,95</td><td>57.600</td></tr>
+      <tr><td>Ultra</td><td>~$99,95</td><td>360.000</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="muted">El coste real depende del modelo, la duración, la resolución y los intentos por vídeo. Hay que medirlo antes de proyectar.</p>
+</section>
+
+<hr>
+<section>
+  <h2>El riesgo principal: las plataformas y el contenido en masa</h2>
+  <div class="card warn" style="margin-top:2rem">
+    <h3>Políticas contra contenido repetitivo o sin valor añadido</h3>
+    <p>Las redes limitan o desmonetizan el contenido producido en masa, muy repetitivo o poco original, y exigen etiquetar el contenido generado con IA. Lo que diferencia a una serie del ruido es tener personajes reconocibles, guion propio y una voz coherente. Hay que revisar las normas vigentes de cada plataforma antes de escalar.</p>
+  </div>
+</section>
+
+<hr>
+<section>
+  <h2>Qué hay que validar</h2>
+  <ul class="checks">
+    <li>Coste real por vídeo de 15 a 30 segundos en Higgsfield.</li>
+    <li>Qué modelos mantienen mejor un personaje entre vídeos.</li>
+    <li>Normas de monetización y de etiquetado de IA en TikTok, Instagram y YouTube.</li>
+    <li>API o MCP de publicación para cada red.</li>
+    <li>Derechos de voces, música y marcas.</li>
+    <li>Qué formatos y series ganan tracción en cada plataforma.</li>
+    <li>Revisión previa para evitar vídeos defectuosos.</li>
+    <li>Gestión de varias cuentas y series.</li>
+  </ul>
+</section>
+
+<hr>
+<section>
+  <h2>Por dónde empezar</h2>
+  <ol class="road">
+    <li><b>MVP</b><br>1 serie, 2 o 3 personajes, 10 episodios generados con aprobación humana y publicados en TikTok e Instagram.</li>
+    <li><b>Medir</b><br>Retención, coste por vídeo y qué personajes funcionan.</li>
+    <li><b>Automatizar</b><br>Lotes semanales con publicación programada.</li>
+    <li><b>Segunda serie</b><br>Un nuevo universo, por ejemplo el de los metales preciosos, con la misma base técnica.</li>
+  </ol>
+</section>
+
+<section class="close">
+  <div class="inner">
+    <h2>Un sistema que produce, publica y aprende</h2>
+    <p>Siguiente paso: elegir la primera serie, definir sus personajes y calcular el coste real por vídeo con una prueba corta.</p>
+  </div>
+</section>
+
+</body>
+</html>
